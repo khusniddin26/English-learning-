@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS</title>
+  <link rel="stylesheet" href="ielts.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+</head>
+<body>
+    <section class="search">
+        <div class="heade">
+        <h1>Search words</h1>
+        </div>
+        <div class="wrapper">
+      <audio id="sound"></audio>
+      <div class="container">
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Type the word here..."
+            id="inp-word"
+          />
+          <button id="search-btn">Search</button>
+        </div>
+        <div id="result" class="result"></div>
+      </div>
+    </div>
+    <script>
+      const url = "https://api.dictionaryapi.dev/api/v2/entries/en/";
+      const result = document.getElementById("result");
+      const sound = document.getElementById("sound");
+
+      const btn = document.getElementById("search-btn");
+      btn.addEventListener("click", () => {
+        let inpWord = document.getElementById("inp-word").value;
+        fetch(`${url}${inpWord}`)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            result.innerHTML = `
+  <div class="word">
+    <h3>${inpWord}</h3>
+    <button onclick="playSound()"> <i class="fas fa-volume-up"></i></button>
+  </div>
+  <div class="details">
+    <p>${data[0].meanings[0].partOfSpeech}</p>
+    <p>/${data[0].phonetic}/</p>
+  </div>
+  <p class="word-meaning">
+    ${data[0].meanings[0].definitions[0].definition}
+  </p>
+  <p class="word-example">${
+    data[0].meanings[0].definitions[0].example || ""
+  }</p>
+  `;
+            sound.setAttribute("src", `https:${data[0].phonetics[0].audio}`);
+          })
+          .catch((error) => {
+            result.innerHTML = `<h3 class="error">Couldn't Find The Word!</h3>`;
+          });
+      });
+      function playSound() {
+        sound.play();
+      }
+    </script>
+    
+    <div class="foot">
+    <h5>©2022 Created by Khusniddin Madaminjanov</h5>
+    </div>
+    </section>
